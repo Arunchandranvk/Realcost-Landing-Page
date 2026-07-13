@@ -48,9 +48,58 @@ function App() {
 
   useScrollRestoration();
 
-  const handleNavigate = (page) => {
-    navigate('/' + page);
+  const handleNavigate = (page, hash = '') => {
+    navigate('/' + page + hash);
   };
+
+  useEffect(() => {
+    if (!location.hash) return;
+
+    const id = location.hash.replace('#', '');
+    const duration = 1400;
+    let frame = 0;
+    let attempts = 0;
+
+    const smoothScrollTo = (targetY) => {
+      const startY = window.scrollY;
+      const distance = targetY - startY;
+      const startTime = performance.now();
+
+      const step = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const ease = 0.5 - Math.cos(progress * Math.PI) / 2;
+        window.scrollTo(0, startY + distance * ease);
+
+        if (progress < 1) {
+          frame = window.requestAnimationFrame(step);
+        }
+      };
+
+      frame = window.requestAnimationFrame(step);
+    };
+
+    const tryScroll = () => {
+      const element = document.getElementById(id);
+      if (element) {
+        const top = element.getBoundingClientRect().top + window.scrollY - 90;
+        smoothScrollTo(top);
+        return;
+      }
+
+      if (attempts < 20) {
+        attempts += 1;
+        window.setTimeout(tryScroll, 150);
+      }
+    };
+
+    const timer = window.setTimeout(tryScroll, 650);
+
+    return () => {
+      window.clearTimeout(timer);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, [location.pathname, location.hash]);
 
   return (
     <>
