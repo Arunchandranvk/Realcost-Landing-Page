@@ -20,8 +20,8 @@ const IconPhone = () => (
 
 const contactItems = [
   { Icon: IconPin,   lines: ['1200 Bloor Street West, Toronto, Ontario'] },
-  { Icon: IconMail,  lines: ['care@realcost.ca'] },
-  { Icon: IconPhone, lines: ['(647) 677-8399'] },
+  { Icon: IconMail,  lines: ['care@realcostestimating.ca'] },
+  { Icon: IconPhone, lines: ['(647) 677-8399', 'Mon–Fri 9:00 AM – 6:00 PM ET'] },
 ];
 
 const inputStyle = {
@@ -96,7 +96,7 @@ const Contact = ({ onNavigate }) => {
               <div className="contact-float-icon"><IconMail /></div>
               <div>
                 <div className="contact-float-label">Email us</div>
-                <div className="contact-float-val">care@realcost.ca</div>
+                <div className="contact-float-val">care@realcostestimating.ca</div>
               </div>
             </motion.div>
             <motion.div className="contact-float-card" whileHover={{ y: -4, boxShadow: '0 16px 32px rgba(15,37,87,.16)' }} transition={{ type: 'spring', stiffness: 300, damping: 20 }}>
