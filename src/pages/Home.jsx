@@ -8,7 +8,6 @@ import { LOGIN_URL } from '../config';
 
 /* Slide + copy travel on the same easing so they read as one moving surface. */
 const SLIDE_EASE = { duration: 0.95, ease: [0.65, 0, 0.35, 1] };
-const pad = (n) => String(n).padStart(2, '0');
 
 /* Hero carousel slides. The copy (badge / headline / sub) swaps per slide; the
    15-year badge and the CTA buttons stay put across all three. */
@@ -38,16 +37,48 @@ const Home = ({ onNavigate }) => {
   const monitorRef2 = useRef(null);
 
   /* ── Hero carousel ──
-     Auto-advance is driven by the progress bar's CSS animation ending (see
-     .hero-dot-fill), not a timer, so hovering the hero pauses the animation and
-     the slide advance together — they can never drift apart. */
-  const [slide, setSlide] = useState(0);
-  const [paused, setPaused] = useState(false);
+     Auto-advances every 6s, always sliding left. `pos` counts 0→1→2→3 where the
+     final position is a clone of the first slide appended to each track — the
+     track keeps moving left onto the clone, then snaps back to position 0 with
+     no transition, so slide 3 → slide 1 reads as one continuous leftward move
+     instead of springing back to the right. The timer pauses on hover. */
+  const N = HERO_SLIDES.length;
+  const [pos, setPos] = useState(0);
+  const [snapping, setSnapping] = useState(false);
+  const pausedRef = useRef(false); // hover pause — a ref so it can never wedge a re-render
   const touchX = useRef(null);
 
-  const goTo = (i) => setSlide((i + HERO_SLIDES.length) % HERO_SLIDES.length);
-  const nextSlide = () => goTo(slide + 1);
-  const prevSlide = () => goTo(slide - 1);
+  const nextSlide = () => setPos((p) => (p >= N ? 1 : p + 1));
+  const prevSlide = () => setPos((p) => (p - 1 + N) % N);
+
+  /* Auto-advance: a single self-scheduling loop that starts fresh on every
+     mount (so it keeps working after you navigate away from Home and back).
+     Pause-on-hover and tab-visibility are read *live* each tick from a ref and
+     document.hidden — there's no separate state to get stuck true, and no
+     reliance on framer's animation callback. */
+  useEffect(() => {
+    let timer;
+    const step = () => {
+      if (!pausedRef.current && !document.hidden) setPos((p) => p + 1);
+      timer = setTimeout(step, 6000);
+    };
+    timer = setTimeout(step, 6000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  /* When pos reaches the appended clone, let the slide animation play, then jump
+     back to the real first slide with no transition — so 3 → 1 reads as one
+     continuous leftward move. */
+  useEffect(() => {
+    if (pos < N) return;
+    const t = setTimeout(() => { setSnapping(true); setPos(0); }, 1000);
+    return () => clearTimeout(t);
+  }, [pos, N]);
+  useEffect(() => {
+    if (!snapping) return;
+    const r = requestAnimationFrame(() => setSnapping(false));
+    return () => cancelAnimationFrame(r);
+  }, [snapping]);
 
   const onTouchStart = (e) => { touchX.current = e.touches[0].clientX; };
   const onTouchEnd = (e) => {
@@ -72,11 +103,11 @@ const Home = ({ onNavigate }) => {
     <div className="page-enter">
       {/* ════════ HERO ════════ */}
       <section
-        className={`hero${paused ? ' is-paused' : ''}`}
+        className="hero"
         aria-roledescription="carousel"
         aria-label="Real Cost highlights"
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
+        onMouseEnter={() => { pausedRef.current = true; }}
+        onMouseLeave={() => { pausedRef.current = false; }}
         onTouchStart={onTouchStart}
         onTouchEnd={onTouchEnd}
       >
@@ -84,13 +115,13 @@ const Home = ({ onNavigate }) => {
             strip slides, so a slide change reads as a horizontal swipe. */}
         <motion.div
           className="hero-bg-track"
-          animate={{ x: `-${slide * 100}%` }}
-          transition={SLIDE_EASE}
+          animate={{ x: `-${pos * 100}%` }}
+          transition={snapping ? { duration: 0 } : SLIDE_EASE}
         >
-          {HERO_SLIDES.map((s, i) => (
-            <div className="hero-bg-slide" key={s.image}>
+          {[...HERO_SLIDES, HERO_SLIDES[0]].map((s, i) => (
+            <div className="hero-bg-slide" key={i}>
               <img
-                className={`hero-slide-img${i === slide ? ' is-active' : ''}`}
+                className={`hero-slide-img${i === pos ? ' is-active' : ''}`}
                 src={process.env.PUBLIC_URL + s.image}
                 alt=""
                 aria-hidden="true"
@@ -114,11 +145,11 @@ const Home = ({ onNavigate }) => {
             <div className="hero-copy-window">
               <motion.div
                 className="hero-copy-track"
-                animate={{ x: `-${slide * 100}%` }}
-                transition={SLIDE_EASE}
+                animate={{ x: `-${pos * 100}%` }}
+                transition={snapping ? { duration: 0 } : SLIDE_EASE}
               >
-                {HERO_SLIDES.map((s, i) => (
-                  <div className={`hero-copy${i === slide ? ' is-active' : ''}`} key={s.image} aria-hidden={i !== slide}>
+                {[...HERO_SLIDES, HERO_SLIDES[0]].map((s, i) => (
+                  <div className={`hero-copy${i === pos ? ' is-active' : ''}`} key={i} aria-hidden={i !== pos}>
                     <div className="hero-badge"><div className="badge-dot"></div>{s.badge}</div>
                     <h1 className="hero-h1">{s.title}</h1>
                     <p className="hero-sub">{s.sub}</p>
@@ -209,26 +240,6 @@ const Home = ({ onNavigate }) => {
               <motion.a whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} className="btn-prim" href={LOGIN_URL} target="_blank" rel="noopener noreferrer">Switch to Real Cost now</motion.a>
               <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} className="btn-ghost" onClick={() => onNavigate('demo')}>Request Demo</motion.button>
             </motion.div>
-
-            {/* Carousel controls: ‹ 01 ──progress── 03 › */}
-            <div className="hero-ctrl">
-              <button className="hero-arrow" onClick={prevSlide} aria-label="Previous slide">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
-              </button>
-              <div className="hero-counter">
-                <span className="hero-count is-current">{pad(slide + 1)}</span>
-                <div className="hero-line">
-                  {/* The bar's CSS animation IS the autoplay clock — when it ends,
-                      we advance. Remounting it per slide restarts the countdown,
-                      and pausing the animation pauses the carousel with it. */}
-                  <span key={slide} className="hero-progress" onAnimationEnd={nextSlide} />
-                </div>
-                <span className="hero-count">{pad(HERO_SLIDES.length)}</span>
-              </div>
-              <button className="hero-arrow" onClick={nextSlide} aria-label="Next slide">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
-              </button>
-            </div>
           </motion.div>
         </div>
       </section>
@@ -378,15 +389,15 @@ const Home = ({ onNavigate }) => {
               <p className="sec-sub" style={{ marginBottom: '36px' }}>Your whole estimation workflow — in one app.</p>
 
               <div style={{ position: 'relative' }}>
-                <div style={{ position: 'absolute', left: '14px', top: '30px', bottom: '30px', width: '1.5px', background: 'linear-gradient(to bottom, rgba(17,38,70,.15), rgba(201,168,76,.4), rgba(17,38,70,.08))', borderRadius: '2px' }} />
+                <div style={{ position: 'absolute', left: '14px', top: '30px', bottom: '30px', width: '1.5px', background: 'linear-gradient(to bottom, rgba(17,38,70,.15), rgba(96,165,250,.4), rgba(17,38,70,.08))', borderRadius: '2px' }} />
                 {[
-                  { n: '1', label: 'Upload Drawings',    desc: 'Upload your PDF plan set. Every page renders on a navigable digital takeoff canvas.', gold: false },
-                  { n: '2', label: 'Symbol Auto-Count',  desc: 'Draw a box around any symbol — the platform finds all matches across every page instantly.', gold: false },
-                  { n: '3', label: 'Build Your Bid',     desc: 'Material, labour, overhead, markup and duration auto-calculated on your bid page.', gold: false },
-                  { n: '4', label: 'Send Quote Letter',  desc: 'One click generates a branded PDF quote letter ready to submit to your client.', gold: true },
-                ].map(({ n, label, desc, gold }) => (
+                  { n: '1', label: 'Upload Drawings',    desc: 'Upload your PDF plan set. Every page renders on a navigable digital takeoff canvas.', accent: false },
+                  { n: '2', label: 'Symbol Auto-Count',  desc: 'Draw a box around any symbol — the platform finds all matches across every page instantly.', accent: false },
+                  { n: '3', label: 'Build Your Bid',     desc: 'Material, labour, overhead, markup and duration auto-calculated on your bid page.', accent: false },
+                  { n: '4', label: 'Send Quote Letter',  desc: 'One click generates a branded PDF quote letter ready to submit to your client.', accent: true },
+                ].map(({ n, label, desc, accent }) => (
                   <div key={n} style={{ display: 'flex', gap: '20px', marginBottom: '24px', position: 'relative', zIndex: 1 }}>
-                    <div style={{ width: '30px', height: '30px', borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '700', background: gold ? 'var(--grd-gold)' : 'var(--grd-sap)', color: gold ? '#0A1428' : '#fff', border: gold ? '1.5px solid rgba(201,168,76,.5)' : '1.5px solid rgba(45,80,137,.25)', boxShadow: '0 3px 10px rgba(15,37,87,.20)' }}>
+                    <div style={{ width: '30px', height: '30px', borderRadius: '50%', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: '700', background: accent ? 'var(--grd-acc)' : 'var(--grd-sap)', color: '#fff', border: accent ? '1.5px solid rgba(96,165,250,.5)' : '1.5px solid rgba(45,80,137,.25)', boxShadow: '0 3px 10px rgba(15,37,87,.20)' }}>
                       {n}
                     </div>
                     <div style={{ paddingTop: '3px' }}>
@@ -422,13 +433,13 @@ const Home = ({ onNavigate }) => {
                 img: '/images/features/autocount.png',
               },
               {
-                bg: 'rgba(197,160,71,.15)',  title: 'Canadian City Pricing',   desc: 'Regional pricing for Toronto, Ottawa, Montreal, Calgary, Vancouver and more.',
+                bg: 'rgba(96,165,250,.15)',  title: 'Canadian City Pricing',   desc: 'Regional pricing for Toronto, Ottawa, Montreal, Calgary, Vancouver and more.',
                 img: '/images/misc/project.png',
               },
 
             ].map(({ bg, title, desc, img }) => (
               <motion.div key={title} className="home-featp-card" style={{ background: '#fff', border: '1px solid #E8EEF8', borderRadius: '18px', position: 'relative', overflow: 'hidden', boxShadow: '0 1px 6px rgba(15,37,87,.05)', height: '100%' }}
-                whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(15,37,87,.10)', borderColor: 'rgba(201,168,76,.35)' }}
+                whileHover={{ y: -6, boxShadow: '0 20px 40px rgba(15,37,87,.10)', borderColor: 'rgba(96,165,250,.35)' }}
                 transition={{ type: 'spring', stiffness: 300, damping: 20 }}>
                 <div className="home-featp-card-img" style={{ background: bg }}>
                   <img src={process.env.PUBLIC_URL + img} alt={title} loading="lazy" />
@@ -501,7 +512,7 @@ const Home = ({ onNavigate }) => {
                   <text x="27" y="15.5" fontFamily="Arial,sans-serif" fontSize="13" fontWeight="700" fill="#FF9D28">Capterra</text>
                 </svg>
               </div>
-              <div style={{ fontSize: '12px', color: '#FF9D28', fontWeight: '700', marginBottom: '2px' }}>★★★★½</div>
+              <div style={{ fontSize: '12px', color: 'var(--gold)', fontWeight: '700', marginBottom: '2px' }}>★★★★½</div>
               <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--txt)' }}>4.6 / 5</div>
             </div>
 
@@ -516,7 +527,7 @@ const Home = ({ onNavigate }) => {
                   <text x="27" y="15.5" fontFamily="Arial,sans-serif" fontSize="13" fontWeight="700" fill="#00B388">GetApp</text>
                 </svg>
               </div>
-              <div style={{ fontSize: '12px', color: '#00B388', fontWeight: '700', marginBottom: '2px' }}>★★★★½</div>
+              <div style={{ fontSize: '12px', color: 'var(--gold)', fontWeight: '700', marginBottom: '2px' }}>★★★★½</div>
               <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--txt)' }}>4.6 / 5</div>
             </div>
 
@@ -531,7 +542,7 @@ const Home = ({ onNavigate }) => {
                   <text x="27" y="15.5" fontFamily="Arial,sans-serif" fontSize="11.5" fontWeight="700" fill="#0B3A5D">Software Advice</text>
                 </svg>
               </div>
-              <div style={{ fontSize: '12px', color: '#0B3A5D', fontWeight: '700', marginBottom: '2px' }}>★★★★½</div>
+              <div style={{ fontSize: '12px', color: 'var(--gold)', fontWeight: '700', marginBottom: '2px' }}>★★★★½</div>
               <div style={{ fontSize: '14px', fontWeight: '800', color: 'var(--txt)' }}>4.6 / 5</div>
             </div>
 
@@ -556,7 +567,7 @@ const Home = ({ onNavigate }) => {
       {/* CTA Band */}
       <div className="cta-band">
         <Reveal style={{ position: 'relative', zIndex: 1, padding: '0 80px' }}>
-          <div className="gold-divider"></div>
+          <div className="accent-divider"></div>
           <h2 style={{ fontSize: '42px', fontWeight: '800', color: '#fff', letterSpacing: '-1.3px', marginBottom: '14px' }}>Ready to do faster estimates?</h2>
           <p style={{ fontSize: '16px', color: 'rgba(220,228,248,.65)', maxWidth: '500px', margin: '0 auto 40px', lineHeight: '1.78', fontWeight: '300' }}>14-day free trial. No credit card required. Your whole team can be estimating digitally today.</p>
           <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>

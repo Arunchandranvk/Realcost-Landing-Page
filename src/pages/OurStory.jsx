@@ -164,7 +164,8 @@ const OurStory = ({ onNavigate }) => {
       <section className="page-hero os-hero">
         <div className="page-hero-accent" />
         <div className="page-hero-bg" style={{ backgroundImage: `url(${process.env.PUBLIC_URL + '/images/about/our_bg.png'})` }}></div>
-        <div style={{ position:'absolute', inset:0, zIndex:0, pointerEvents:'none', background:'linear-gradient(105deg,rgba(10,20,40,.88) 0%,rgba(15,37,87,.72) 42%,rgba(15,37,87,.28) 75%,transparent 100%)' }} />
+        <div style={{ position:'absolute', inset:0, zIndex:0, pointerEvents:'none', background:'linear-gradient(105deg,rgba(10,20,40,.48) 0%,rgba(10,20,40,.30) 34%,transparent 62%)' }} />
+        <div className="hero-glow" />
         <div className="cxl" style={{ textAlign:'left' }}>
           <motion.div
             style={{ maxWidth:'580px' }}
@@ -174,7 +175,7 @@ const OurStory = ({ onNavigate }) => {
           >
             <div className="pg-badge">Your Estimating Partner</div>
             <div className="ph-title">15 Years of Winning Bids.<br />Now in Your Hands.</div>
-            <p style={{ fontSize:'15px', color:'rgba(240,217,138,.85)', fontWeight:'600', letterSpacing:'.01em', margin:'0 0 14px' }}>
+            <p style={{ fontSize:'15px', color:'rgba(191,219,254,.85)', fontWeight:'600', letterSpacing:'.01em', margin:'0 0 14px' }}>
               Trusted Name in the Electrical Estimating Industry
             </p>
             <p className="sec-sub" style={{ margin:'0 0 40px' }}>
@@ -195,9 +196,9 @@ const OurStory = ({ onNavigate }) => {
           <RevealGroup className="os-stats-grid">
             {[
               { v: 1000, s: '+', l: 'Projects Won',       ico: <IconTrophy />,   color: 'var(--gold)' },
-              { v: 8000, s: '+', l: 'Projects Estimated', ico: <IconCrane />,    color: 'var(--sap)' },
+              { v: 8000, s: '+', l: 'Projects Estimated', ico: <IconCrane />,    color: 'var(--gold3)' },
               { v: 500,  s: '+', l: 'Contractors Served', ico: <IconUsers />,    color: 'var(--gold)' },
-              { v: 10,   s: 'x', l: 'Client ROI',         ico: <IconTrending />, color: 'var(--sap)' },
+              { v: 10,   s: 'x', l: 'Client ROI',         ico: <IconTrending />, color: 'var(--gold3)' },
               { v: 15,   s: '+', l: 'Years Experience',   ico: <IconHardHat />,  color: 'var(--gold)' },
             ].map(({ v, s, l, ico, color }) => (
               <div key={l} className="os-stat">
@@ -281,11 +282,11 @@ const OurStory = ({ onNavigate }) => {
         <div className="cxl">
           <div className="os-2col">
             <Reveal>
-              <div className="sec-eyebrow gold">Built By Estimators</div>
-              <h2 style={{ fontSize: '36px', fontWeight: '800', color: '#fff', letterSpacing: '-1.2px', lineHeight: '1.16', marginBottom: '20px' }}>
+              <div className="sec-eyebrow accent">Built By Estimators</div>
+              <h2 style={{ fontSize: '36px', fontWeight: '800', color: 'var(--sap)', letterSpacing: '-1.2px', lineHeight: '1.16', marginBottom: '20px' }}>
                 Finally, Software That<br />Works Like You Do
               </h2>
-              <p style={{ fontSize: '15px', color: 'rgba(220,228,248,.68)', lineHeight: '1.85', fontWeight: '300', marginBottom: '32px', maxWidth: '480px' }}>
+              <p style={{ fontSize: '15px', color: 'rgba(17,38,70,.78)', lineHeight: '1.85', fontWeight: '400', marginBottom: '32px', maxWidth: '480px' }}>
                 We're not some Silicon Valley startup. We're electrical estimators who got tired of overpriced, overcomplicated software. So we built exactly what we needed — and nothing we didn't.
               </p>
               <div className="os-worklike-checks">
@@ -359,14 +360,16 @@ const OurStory = ({ onNavigate }) => {
         <div className="cxl">
           <div className="os-2col">
             <Reveal style={{ background: 'linear-gradient(135deg,#0E1E3A 0%,#1A3A72 100%)', borderRadius: '24px', padding: '52px 44px', position: 'relative', overflow: 'hidden' }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'var(--grd-gold)' }} />
-              <div style={{ position: 'absolute', bottom: '-40px', right: '-40px', width: '220px', height: '220px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(197,160,71,.12) 0%,transparent 70%)', pointerEvents: 'none' }} />
-              <div style={{ fontSize: '38px', marginBottom: '18px', lineHeight: 1 }}>"</div>
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'var(--grd-acc)' }} />
+              <div style={{ position: 'absolute', bottom: '-40px', right: '-40px', width: '220px', height: '220px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(96,165,250,.12) 0%,transparent 70%)', pointerEvents: 'none' }} />
+              <div style={{ fontSize: '38px', marginBottom: '18px', lineHeight: 1, color: '#fff' }}>"</div>
               <p style={{ fontSize: '17px', fontWeight: '400', color: 'rgba(220,230,255,.88)', lineHeight: '1.78', marginBottom: '28px', fontStyle: 'italic' }}>
                 We built Real Cost because we lived the problem ourselves. Estimating took too long, cost too much, and the tools available weren't made for Canadian contractors. We changed that.
               </p>
               <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                <div style={{ width: '46px', height: '46px', borderRadius: '50%', background: 'var(--grd-gold)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: '800', color: '#0A1428', flexShrink: 0 }}>RC</div>
+                <div style={{ width: '46px', height: '46px', borderRadius: '50%', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, overflow: 'hidden', boxShadow: '0 2px 10px rgba(0,0,0,.22)' }}>
+                  <img src={process.env.PUBLIC_URL + '/images/brand/logo.png'} alt="Real Cost" style={{ width: '32px', height: '32px', objectFit: 'contain' }} />
+                </div>
                 <div>
                   <div style={{ fontSize: '14px', fontWeight: '600', color: '#fff' }}>Founding Team</div>
                   <div style={{ fontSize: '12px', color: 'rgba(210,220,255,.55)', marginTop: '2px' }}>Real Cost Estimating Inc. — 1200 Bloor Street West, Toronto</div>
@@ -444,10 +447,10 @@ const OurStory = ({ onNavigate }) => {
           </Reveal>
           <RevealGroup style={{ display: 'flex', flexDirection: 'column', gap: '14px', maxWidth: '900px', margin: '0 auto 36px' }}>
             {[
-              { title: 'Senior Full-Stack Engineer',    dept: 'Engineering',      type: 'Full-time · Hybrid (Toronto)',   summary: 'Build core estimating features end-to-end — takeoff canvas, auto-count, and the bid page — across React and Node.', details: ['Design and ship new features for the estimating workflow.', 'Work across React and Node to improve the full product experience.', 'Help maintain reliability, testing, and performance across core features.'] },
-              { title: 'Product Designer',              dept: 'Design',           type: 'Full-time · Hybrid (Toronto)',   summary: 'Own the product experience for trade estimators, from research and flows to polished, shippable UI.', details: ['Shape the user experience for estimating workflows from end to end.', 'Collaborate closely with product and engineering to turn ideas into refined UI.', 'Help craft design systems and clear, intuitive product patterns.'] },
-              { title: 'Customer Success Manager',      dept: 'Customer Success', type: 'Full-time · 1200 Bloor Street West, Toronto', summary: 'Onboard contractors, run demos, and make sure every customer gets value from Real Cost in their first week.', details: ['Guide new customers through onboarding and setup.', 'Run product demos and support adoption across their estimating team.', 'Act as a trusted partner for customer growth and retention.'] },
-              { title: 'Estimating Specialist (Trades)', dept: 'Product',         type: 'Full-time · Hybrid (Toronto)',   summary: 'Bring real electrical/mechanical estimating expertise to shape pricing data, workflows, and templates.', details: ['Use your estimating experience to improve workflows and templates.', 'Help shape pricing logic and feature requirements for the platform.', 'Work closely with product and engineering to solve real-world estimating challenges.'] },
+              { title: 'Electrical Estimator',           dept: 'Estimating',       type: 'Full-time · Hybrid (Toronto)',   summary: 'Prepare accurate electrical takeoffs and competitive bids using Real Cost, from drawings to final quote letter.', details: ['Produce detailed electrical takeoffs and estimates for a range of projects.', 'Apply city-wise pricing and labour factors to build accurate, winning bids.', 'Review drawings and specifications to ensure complete, error-free estimates.'] },
+              { title: 'Senior Estimating Specialist',   dept: 'Estimating',       type: 'Full-time · Hybrid (Toronto)',   summary: 'Bring deep electrical estimating expertise to shape pricing data, assemblies, and estimating workflows.', details: ['Use your estimating experience to refine formulas, assemblies, and templates.', 'Help shape pricing logic and estimating feature requirements for the platform.', 'Mentor estimators and review bids for accuracy and completeness.'] },
+              { title: 'Estimating Data Analyst',        dept: 'Estimating',       type: 'Full-time · Hybrid (Toronto)',   summary: 'Maintain and improve the city-wise material pricing and assembly data that powers every estimate.', details: ['Keep material pricing and assembly data accurate and up to date across cities.', 'Analyse estimating data to spot gaps and improve pricing quality.', 'Work with estimators to validate formulas against real project outcomes.'] },
+              { title: 'Estimating Support Specialist',  dept: 'Estimating',       type: 'Full-time · 1200 Bloor Street West, Toronto', summary: 'Help contractors get the most out of Real Cost by guiding them through the estimating workflow.', details: ['Guide new customers through the estimating workflow and setup.', 'Answer estimating questions and support adoption across their team.', 'Share customer feedback to improve estimating features and templates.'] },
             ].map((job, i) => {
               const isOpen = openJob === i;
               return (
@@ -475,7 +478,7 @@ const OurStory = ({ onNavigate }) => {
                   </div>
                   <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
                     <span style={{ fontSize: '12px', fontWeight: '600', color: 'var(--sap)' }}>{isOpen ? 'Hide details' : 'View details'}</span>
-                    <motion.a whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} className="btn-prim" href={`mailto:hr@realcost.com?subject=${encodeURIComponent('Application: ' + job.title)}`} onClick={(e) => e.stopPropagation()} style={{ flexShrink: 0 }}>
+                    <motion.a whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} className="btn-prim" href={`https://mail.google.com/mail/?view=cm&fs=1&to=hr@realcost.com&su=${encodeURIComponent('Application: ' + job.title)}`} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} style={{ flexShrink: 0 }}>
                       Apply →
                     </motion.a>
                   </div>
@@ -486,7 +489,7 @@ const OurStory = ({ onNavigate }) => {
 
           <p style={{ textAlign: 'center', fontSize: '13px', color: '#8A92A6', fontWeight: '400' }}>
             Don't see your role?{' '}
-            <a href="mailto:hr@realcost.com" style={{ color: 'var(--sap)', fontWeight: '600', textDecoration: 'none' }}>
+            <a href="https://mail.google.com/mail/?view=cm&fs=1&to=hr@realcost.com" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--sap)', fontWeight: '600', textDecoration: 'none' }}>
               Email us anyway →
             </a>
           </p>
@@ -496,7 +499,7 @@ const OurStory = ({ onNavigate }) => {
       {/* ── CTA Band ── */}
       <div className="cta-band">
         <Reveal className="wrc-cta-pad" style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '11px', fontWeight: '700', color: 'rgba(228,199,120,.75)', textTransform: 'uppercase', letterSpacing: '.14em', marginBottom: '14px' }}>
+          <div style={{ fontSize: '11px', fontWeight: '700', color: 'rgba(147,197,253,.75)', textTransform: 'uppercase', letterSpacing: '.14em', marginBottom: '14px' }}>
             15 Years of Expertise. Now in Your Hands.
           </div>
           <h2 style={{ fontSize: '40px', fontWeight: '800', color: '#fff', letterSpacing: '-1.3px', marginBottom: '14px', lineHeight: '1.15' }}>

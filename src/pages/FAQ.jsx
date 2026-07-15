@@ -52,32 +52,31 @@ const faqGroups = [
   },
 ];
 
-const IconCalendar = () => (
+const IconCalendarCheck = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="3" y="5" width="18" height="16" rx="2.5" /><path d="M3 10h18M8 3v4M16 3v4" />
+    <rect x="3" y="4.5" width="18" height="16.5" rx="2.5" /><path d="M3 9.5h18M8 2.5v4M16 2.5v4M8.5 15l2.4 2.4 4.6-4.8" />
   </svg>
 );
 const IconCardOff = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-    <rect x="2.5" y="5.5" width="19" height="13" rx="2.5" /><path d="M2.5 10h19M4 20.5 20 3.5" />
+    <rect x="2.5" y="5.5" width="19" height="13" rx="2.5" /><path d="M2.5 10h19M6 14.5h3" /><path d="M3.5 20.5 20.5 3.5" />
   </svg>
 );
-const IconHardHat = () => (
+const IconAward = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M3 17a9 9 0 0 1 18 0" /><path d="M9.5 8.2V4.5A1.5 1.5 0 0 1 11 3h2a1.5 1.5 0 0 1 1.5 1.5v3.7" /><path d="M2 17h20v2.5H2z" />
+    <circle cx="12" cy="9" r="6" /><path d="M8.2 14.2 6.5 22l5.5-3.3L17.5 22l-1.7-7.8" />
   </svg>
 );
-const IconBolt = () => (
+const IconHeadset = () => (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M13 2 4 14h7l-1 8 9-12h-7l1-8z" />
+    <path d="M4 13a8 8 0 0 1 16 0" /><path d="M4 13v4a2 2 0 0 0 2 2h1v-6H6a2 2 0 0 0-2 2Z" /><path d="M20 13v4a2 2 0 0 1-2 2h-2v-6h2a2 2 0 0 1 2 2Z" /><path d="M18 19a4 4 0 0 1-4 3h-2" />
   </svg>
 );
 
 const stats = [
-  { val: '14 Days',  label: 'Free trial, full access', ico: <IconCalendar />, tone: 'gold' },
-  { val: 'No Card',  label: 'Required to start',       ico: <IconCardOff />,  tone: 'navy' },
-  { val: '15+ Yrs',  label: 'Estimation expertise',    ico: <IconHardHat />,  tone: 'gold' },
-  { val: 'Same Day', label: 'Support response',        ico: <IconBolt />,     tone: 'navy' },
+  { val: '14 Days',  label: 'Free trial, full access', ico: <IconCalendarCheck />, tone: 'accent' },
+  { val: 'No Card',  label: 'Required to start',       ico: <IconCardOff />,       tone: 'navy' },
+  { val: 'Same Day', label: 'Support response',        ico: <IconHeadset />,       tone: 'navy' },
 ];
 
 const IconSearch = () => (
@@ -119,7 +118,8 @@ const FAQ = ({ onNavigate }) => {
       <section className="page-hero">
         <div className="page-hero-accent" />
         <div className="page-hero-bg" style={{ backgroundImage: `url(${process.env.PUBLIC_URL + '/images/about/our_bg.png'})` }} />
-        <div style={{ position: 'absolute', inset: 0, zIndex: 0, background: 'linear-gradient(105deg,rgba(10,20,40,.97) 0%,rgba(15,37,87,.93) 45%,rgba(15,37,87,.55) 70%,transparent 100%)' }} />
+        <div style={{ position: 'absolute', inset: 0, zIndex: 0, background: 'linear-gradient(105deg,rgba(10,20,40,.52) 0%,rgba(10,20,40,.32) 34%,transparent 62%)' }} />
+        <div className="hero-glow" />
         <div className="cxl" style={{ textAlign: 'left' }}>
           <motion.div
             style={{ maxWidth: '600px' }}
@@ -170,7 +170,7 @@ const FAQ = ({ onNavigate }) => {
 
           {/* Section heading */}
           <div style={{ textAlign: 'center', marginBottom: '36px' }}>
-            <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '.18em', color: '#C5A047', marginBottom: '12px' }}>
+            <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '.18em', color: '#2563EB', marginBottom: '12px' }}>
               Common Questions
             </div>
             <h2 style={{ fontSize: '36px', fontWeight: '800', color: '#112646', letterSpacing: '-1px', margin: '0 0 14px' }}>
@@ -270,7 +270,7 @@ const FAQ = ({ onNavigate }) => {
       <section style={{ background: '#0B1629', padding: '80px 0' }}>
         <div className="cxl" style={{ textAlign: 'center' }}>
           <div>
-            <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '.18em', color: '#C5A047', marginBottom: '16px' }}>
+            <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '.18em', color: '#2563EB', marginBottom: '16px' }}>
               Premium support included
             </div>
             <h2 style={{ fontSize: '36px', fontWeight: '800', color: '#fff', letterSpacing: '-1px', marginBottom: '14px' }}>
