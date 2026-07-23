@@ -76,7 +76,7 @@ const Demo = () => {
     <div className="page-enter">
       <section className="page-hero">
         <div className="page-hero-accent" />
-        <div className="page-hero-bg" style={{ backgroundImage: `url(${process.env.PUBLIC_URL + '/images/misc/request_demo.png'})` }} />
+        <div className="page-hero-bg demo-hero-bg" style={{ backgroundImage: `url(${process.env.PUBLIC_URL + '/images/misc/request_demo.png'})` }} />
         <div style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none', background: 'linear-gradient(105deg,rgba(10,20,40,.52) 0%,rgba(10,20,40,.32) 34%,transparent 62%)' }} />
         <div className="hero-glow" />
         <div className="cxl" style={{ textAlign: 'left' }}>
@@ -209,7 +209,7 @@ const Demo = () => {
                     <div style={{ marginBottom: '14px' }}><label className="flabel">Company name *</label><input className="finput" placeholder="ABC Electrical Ltd." value={form.company} onChange={setField('company')} /></div>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '14px' }}>
                       <div><label className="flabel">Phone number</label><input className="finput" placeholder="(647) 000-0000" value={form.phone} onChange={setField('phone')} /></div>
-                      <div><label className="flabel">Trade / sector *</label><select className="finput" value={form.trade} onChange={setField('trade')}><option value="">Select your trade</option><option>Electrical</option><option>Mechanical / HVAC</option><option>Plumbing</option><option>General contractor</option><option>Engineer / Architect</option></select></div>
+                      <div><label className="flabel">Project sector *</label><select className="finput" value={form.trade} onChange={setField('trade')}><option value="">Select your sector</option><option>Commercial</option><option>Residential</option><option>Institutional</option><option>Industrial</option></select></div>
                     </div>
                     <div style={{ marginBottom: '28px' }}><label className="flabel">What are you hoping to achieve? (optional)</label><select className="finput" value={form.goal} onChange={setField('goal')}><option value="">Select goal</option><option>Speed up my takeoff process</option><option>Reduce estimation errors</option><option>Get Canadian city-based pricing</option><option>Replace my current estimating tool</option><option>Just exploring options</option></select></div>
                     <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} className="btn-form" onClick={() => setStep('success')} disabled={!step1Valid} style={{ opacity: step1Valid ? 1 : 0.4 }}>Confirm my demo →</motion.button>
